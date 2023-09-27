@@ -7,8 +7,8 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
-internal class Sodoku2Test {
-    private lateinit var sodoku: Sodoku2
+internal class SudokuTest {
+    private lateinit var sodoku: Sudoku
     val dummyBoard = listOf(
         listOf(7, 0, 2, 0, 5, 0, 6, 0, 0),
         listOf(0, 0, 0, 0, 0, 3, 0, 0, 0),
@@ -33,7 +33,7 @@ internal class Sodoku2Test {
 
     @Before
     fun setup() {
-        sodoku = Sodoku2(9)
+        sodoku = Sudoku(9)
     }
 
     @Test

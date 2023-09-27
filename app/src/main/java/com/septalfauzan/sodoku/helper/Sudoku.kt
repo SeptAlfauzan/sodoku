@@ -1,6 +1,6 @@
 package com.septalfauzan.sodoku.helper
 
-class Sodoku(override val GRID_SIZE: Int) : ISodoku(){
+class Sudoku(override val GRID_SIZE: Int) : ISodoku(){
     override fun isInRow(board: List<List<Int>>, row: Int, number: Int): Boolean {
         for(i in 0 until GRID_SIZE){
             if(board[row][i] == number) return true
