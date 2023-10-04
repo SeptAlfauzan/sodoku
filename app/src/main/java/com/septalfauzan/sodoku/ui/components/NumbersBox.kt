@@ -35,12 +35,10 @@ import com.septalfauzan.sodoku.ui.theme.SodokuTheme
 fun NumberBoxItem(
     isSelected: Boolean,
     selected: () -> Unit,
-    size: Dp,
     number: Int?,
     modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier
-        .size(size)
         .clip(RoundedCornerShape(4.dp))
         .background(
             MaterialTheme.colors.secondary
@@ -98,7 +96,6 @@ private fun Preview() {
                         LazyRow {
                             items(9) { col ->
                                 NumberBoxItem(
-                                    size = 32.dp,
                                     isSelected = row == selectedRow && col == selectedColumn,
                                     selected = {
                                         selectedRow = row
