@@ -9,7 +9,7 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 internal class SudokuTest {
     private lateinit var sodoku: Sudoku
-    val dummyBoard = listOf(
+    private val dummyBoard = listOf(
         listOf(7, 0, 2, 0, 5, 0, 6, 0, 0),
         listOf(0, 0, 0, 0, 0, 3, 0, 0, 0),
         listOf(1, 0, 0, 0, 0, 9, 5, 0, 0),

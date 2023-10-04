@@ -15,3 +15,4 @@ dependencyResolutionManagement {
 rootProject.name = "Sodoku"
 include ':app'
 include ':core'
+include ':lint'

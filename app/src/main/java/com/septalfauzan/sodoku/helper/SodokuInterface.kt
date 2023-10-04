@@ -1,7 +1,7 @@
 package com.septalfauzan.sodoku.helper
 
-abstract class ISodoku {
-    abstract val GRID_SIZE: Int
+abstract class SodokuInterface {
+    abstract val gridSize: Int
     abstract fun isInRow(board: List<List<Int>>, row: Int, number: Int): Boolean
     abstract fun isInColumn(board: List<List<Int>>, column: Int, number: Int): Boolean
     abstract fun isInBoard(board: List<List<Int>>, row: Int, column: Int, number: Int): Boolean

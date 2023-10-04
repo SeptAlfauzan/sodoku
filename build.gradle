@@ -1,10 +1,28 @@
 buildscript {
     ext {
+        gson_version = "2.10.1"
+        hilt_version = "2.44"
         compose_ui_version = '1.2.0'
+        mockito_version = '5.5.0'
+        nav_version = "2.6.0-rc01"
+
+    }
+    repositories {
+        maven {
+            url 'https://maven.google.com/'
+            name 'Google'
+        }
+        jcenter()
+        google()
+        maven {
+            url 'https://mvnrepository.com/artifact/com.android.tools.lint/lint-gradle-api'
+        }
     }
 }// Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
     id 'com.android.application' version '7.4.0' apply false
-    id 'com.android.library' version '7.4.0' apply false
-    id 'org.jetbrains.kotlin.android' version '1.7.0' apply false
+id 'com.android.library' version '7.4.0' apply false
+    id 'org.jetbrains.kotlin.android' version '1.8.0' apply false
+    id 'com.google.dagger.hilt.android' version '2.44' apply false
+    id 'org.jetbrains.kotlin.jvm' version '1.7.21' apply false
 }
