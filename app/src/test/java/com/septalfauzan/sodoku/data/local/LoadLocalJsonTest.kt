@@ -2,6 +2,8 @@ package com.septalfauzan.sodoku.data.local
 
 import android.content.Context
 import com.septalfauzan.sodoku.core.data.local.LoadLocalJson
+import junit.framework.TestCase.assertNotNull
+import junit.framework.TestCase.assertNull
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -19,13 +21,37 @@ internal class LoadLocalJsonTest {
     @Before
     fun setup() {
         mockContext = mock(Context::class.java)
-//        `when`(LoadLocalJson.getBoard(mockContext))
     }
 
     @Test
-    fun getBoard() {
-        val board = LoadLocalJson.getBoard(mockContext)
-        println(board)
-//        assertEquals(BoardResponse::class.java, board)
+    fun get_valid_board() {
+        val jsonStr = """
+            {
+              "board": [
+                [0,0,0, 0,0,0, 0,0,0],
+                [0,0,0, 0,0,0, 0,0,0],
+                [0,0,0, 0,0,0, 0,0,0],
+
+                [0,0,0, 0,0,0, 0,0,0],
+                [0,0,0, 0,0,0, 0,0,0],
+                [0,0,0, 0,0,0, 0,0,0],
+
+                [0,0,0, 0,0,0, 0,0,0],
+                [0,0,0, 0,0,0, 0,0,0],
+                [0,0,0, 0,0,0, 0,0,0]
+              ]
+            }
+        """.trimIndent()
+        val board = LoadLocalJson.getBoard(jsonStr)
+        assertNotNull(board)
+    }
+
+    @Test
+    fun get_invalid_board() {
+        val jsonStr = """
+            {}
+        """.trimIndent()
+        val boardResponse = LoadLocalJson.getBoard(jsonStr)
+        assertNull(boardResponse.board)
     }
 }

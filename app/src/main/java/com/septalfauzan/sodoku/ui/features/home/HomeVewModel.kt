@@ -1,13 +1,16 @@
 package com.septalfauzan.sodoku.ui.features.home
 
+import android.content.Context
 import android.util.Log
 import android.util.SparseArray
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.septalfauzan.sodoku.R
 import com.septalfauzan.sodoku.core.domain.usecase.SudokuGameUseCaseInterface
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,7 +21,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeVewModel @Inject constructor(private val useCase: SudokuGameUseCaseInterface) : ViewModel() {
+class HomeVewModel @Inject constructor(@ApplicationContext private val context: Context, private val useCase: SudokuGameUseCaseInterface) : ViewModel() {
     private val _boardState = mutableStateListOf<MutableList<Int>>()
     val boardState: List<List<Int>> = _boardState
 
@@ -55,7 +58,8 @@ class HomeVewModel @Inject constructor(private val useCase: SudokuGameUseCaseInt
 
     private fun getBoard() {
         viewModelScope.launch(Dispatchers.Default) {
-            val board = useCase.getBoard()
+            val jsonStr = context.resources.openRawResource(R.raw.empty_board).bufferedReader().use { it.readText() }
+            val board = useCase.getBoard(jsonStr)
             board.map { row ->
                 val columnList = mutableStateListOf<Int>()
                 row.map { col ->

@@ -8,9 +8,9 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 
-class SudokuRepository @Inject constructor(@ApplicationContext private val context: Context) :
+class SudokuRepository @Inject constructor() :
     SudokuRepositoryInterface {
-    override fun getBoard(): List<List<Int>> = LoadLocalJson.getBoard(context).board
+    override fun getBoard(jsonStr: String): List<List<Int>> = LoadLocalJson.getBoard(jsonStr).board
 }
 
 //val board = LoadLocalJson.getBoard(context).board
