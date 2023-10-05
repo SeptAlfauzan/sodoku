@@ -12,9 +12,9 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -41,20 +41,20 @@ fun NumberBoxItem(
     Box(modifier = modifier
         .clip(RoundedCornerShape(4.dp))
         .background(
-            MaterialTheme.colors.secondary
+            if(number == 0 || number == null) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.secondary
         )
         .border(
             border = BorderStroke(
                 width = if (isSelected) 2.dp else 0.dp,
-                color = if (isSelected) MaterialTheme.colors.primary else Color.Transparent
+                color = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent
             ), shape = RoundedCornerShape(4.dp)
         )
         .clickable {
             selected()
         }) {
         Text(
-            text = number?.toString() ?: "", style = MaterialTheme.typography.subtitle2.copy(
-                textAlign = TextAlign.Center, color = MaterialTheme.colors.primary
+            text = number?.toString() ?: "", style = MaterialTheme.typography.titleMedium.copy(
+                textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.primary
             ), modifier = Modifier
                 .align(Alignment.Center)
                 .size(24.dp)
