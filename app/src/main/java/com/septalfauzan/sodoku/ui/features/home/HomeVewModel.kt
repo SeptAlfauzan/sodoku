@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.septalfauzan.sodoku.R
 import com.septalfauzan.sodoku.core.domain.usecase.SudokuGameUseCaseInterface
+import dagger.hilt.android.internal.Contexts.getApplication
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -21,7 +22,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeVewModel @Inject constructor(@ApplicationContext private val context: Context, private val useCase: SudokuGameUseCaseInterface) : ViewModel() {
+class HomeVewModel @Inject constructor(private val useCase: SudokuGameUseCaseInterface) : ViewModel() {
     private val _boardState = mutableStateListOf<MutableList<Int>>()
     val boardState: List<List<Int>> = _boardState
 
@@ -58,8 +59,8 @@ class HomeVewModel @Inject constructor(@ApplicationContext private val context: 
 
     private fun getBoard() {
         viewModelScope.launch(Dispatchers.Default) {
-            val jsonStr = context.resources.openRawResource(R.raw.empty_board).bufferedReader().use { it.readText() }
-            val board = useCase.getBoard(jsonStr)
+
+            val board = useCase.getBoard()
             board.map { row ->
                 val columnList = mutableStateListOf<Int>()
                 row.map { col ->

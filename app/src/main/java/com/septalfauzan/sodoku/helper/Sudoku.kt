@@ -1,6 +1,6 @@
 package com.septalfauzan.sodoku.helper
 
-class Sudoku(override val gridSize: Int) : SodokuInterface() {
+class Sudoku(override val gridSize: Int) : SudokuInterface() {
 
     /**
      * Method to check if number is already in board row or not
@@ -126,15 +126,15 @@ class Sudoku(override val gridSize: Int) : SodokuInterface() {
 
     /**
      * Method to generate sudoku board with occupy cell
-     * @param cellOccupy used to defined how many cell need to occupy from blank board
+     * @param cellsOccupy used to defined how many cell need to occupy from blank board
      * @return two dimensional list act as sudoku board, with few cell occupy with valid number
      */
-    override fun generateRandomSeed(cellOccupy: Int): List<List<Int>> {
-        if (cellOccupy >= gridSize) throw Exception("Maximum cell occupied must be less than $gridSize!")
+    override fun generateRandomSeed(cellsOccupy: Int): List<List<Int>> {
+        if (cellsOccupy >= gridSize) throw Exception("Maximum cell occupied must be less than $gridSize!")
 
         try {
             val blankBoard = (0 until gridSize).map {
-                (0 until gridSize).mapIndexed { index, i -> 0 }.toMutableList()
+                (0 until gridSize).map { 0 }.toMutableList()
             }.toMutableList()
             val occupied = mutableListOf<Int>()
             val elements = (0 until gridSize).toMutableList()
@@ -144,7 +144,7 @@ class Sudoku(override val gridSize: Int) : SodokuInterface() {
                 val randomRow = (0 until gridSize).map { it }.random()
                 val randomNumber = elements.random()
 
-                if (occupied.size == cellOccupy) return blankBoard
+                if (occupied.size == cellsOccupy) return blankBoard
 
                 if (isValidPlacement(blankBoard, randomRow, randomCol, randomNumber)) {
                     blankBoard[randomRow][randomCol] = randomNumber
@@ -152,7 +152,6 @@ class Sudoku(override val gridSize: Int) : SodokuInterface() {
                     elements.remove(randomNumber)
                 }
             }
-            return blankBoard
         } catch (e: Exception) {
             throw e
         }

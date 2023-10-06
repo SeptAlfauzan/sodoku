@@ -87,7 +87,6 @@ private fun Preview() {
     SodokuTheme {
         Surface {
             Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
-                var boardState: MutableList<MutableList<Int>> by remember { mutableStateOf(dummyBoard) }
                 var selectedRow: Int? by remember { mutableStateOf(null) }
                 var selectedColumn: Int? by remember { mutableStateOf(null) }
 
@@ -101,7 +100,7 @@ private fun Preview() {
                                         selectedRow = row
                                         selectedColumn = col
                                     },
-                                    number = if(boardState[row][col] == 0) null else boardState[row][col],
+                                    number = if(dummyBoard[row][col] == 0) null else dummyBoard[row][col],
                                     modifier = Modifier.padding(
                                         end = if ((col + 1) % 3 == 0) 12.dp else 4.dp,
                                         bottom = if ((row + 1) % 3 == 0) 12.dp else 4.dp
@@ -115,9 +114,9 @@ private fun Preview() {
                 LazyVerticalGrid(columns = GridCells.Fixed(5) ){
                     items(10){
                         if(it == 9) InputButton(type = InputButtonType.ERASER, onClick = {
-                            updateNumber(newNum = it+1, row = selectedRow ?: -1, col = selectedColumn ?: -1, board = boardState)
+                            updateNumber(newNum = it+1, row = selectedRow ?: -1, col = selectedColumn ?: -1, board = dummyBoard)
                         }) else InputButton(number = it+1, onClick = {
-                            updateNumber(newNum = 0, row = selectedRow ?: -1, col = selectedColumn ?: -1, board = boardState)
+                            updateNumber(newNum = 0, row = selectedRow ?: -1, col = selectedColumn ?: -1, board = dummyBoard)
                         })
                     }
                 }
