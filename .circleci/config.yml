@@ -152,7 +152,6 @@ workflows:
 #            branches:
 #              only: main # Commits to main branch
       - benchmarks-emulator
-      - benchmarks-ftl
       - release-build:
           requires:
             - unit-test
