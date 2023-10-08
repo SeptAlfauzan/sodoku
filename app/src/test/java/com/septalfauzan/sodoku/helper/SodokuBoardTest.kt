@@ -131,7 +131,7 @@ internal class SudokuTest {
         val fakeSolutionBoard = dummyBoard
 
         val result = sudoku.compareCellValueIgnoreZero(fakeBoard, fakeSolutionBoard, 0, 0)
-        assertEquals(false, result)
+        assertEquals(true, result)
     }
 
     @Test
