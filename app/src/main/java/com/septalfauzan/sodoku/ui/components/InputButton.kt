@@ -7,8 +7,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,18 +30,17 @@ fun InputButton(
     modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier
-        .padding(4.dp)
         .size(48.dp)
         .clip(RoundedCornerShape(8.dp))
         .clickable { onClick() }
-        .background(MaterialTheme.colors.secondary),
+        .background(MaterialTheme.colorScheme.surface),
         contentAlignment = Alignment.Center
     ) {
         if (type == InputButtonType.NUMBER) {
             Text(
                 text = number.toString(),
-                style = MaterialTheme.typography.h6,
-                color = MaterialTheme.colors.primary
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.primary
             )
         } else {
             Image(

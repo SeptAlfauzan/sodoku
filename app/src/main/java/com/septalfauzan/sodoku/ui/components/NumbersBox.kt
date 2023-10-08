@@ -12,9 +12,9 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -41,20 +41,20 @@ fun NumberBoxItem(
     Box(modifier = modifier
         .clip(RoundedCornerShape(4.dp))
         .background(
-            MaterialTheme.colors.secondary
+            if(number == 0 || number == null) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.secondary
         )
         .border(
             border = BorderStroke(
                 width = if (isSelected) 2.dp else 0.dp,
-                color = if (isSelected) MaterialTheme.colors.primary else Color.Transparent
+                color = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent
             ), shape = RoundedCornerShape(4.dp)
         )
         .clickable {
             selected()
         }) {
         Text(
-            text = number?.toString() ?: "", style = MaterialTheme.typography.subtitle2.copy(
-                textAlign = TextAlign.Center, color = MaterialTheme.colors.primary
+            text = number?.toString() ?: "", style = MaterialTheme.typography.titleMedium.copy(
+                textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.primary
             ), modifier = Modifier
                 .align(Alignment.Center)
                 .size(24.dp)
@@ -87,7 +87,6 @@ private fun Preview() {
     SodokuTheme {
         Surface {
             Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
-                var boardState: MutableList<MutableList<Int>> by remember { mutableStateOf(dummyBoard) }
                 var selectedRow: Int? by remember { mutableStateOf(null) }
                 var selectedColumn: Int? by remember { mutableStateOf(null) }
 
@@ -101,7 +100,7 @@ private fun Preview() {
                                         selectedRow = row
                                         selectedColumn = col
                                     },
-                                    number = if(boardState[row][col] == 0) null else boardState[row][col],
+                                    number = if(dummyBoard[row][col] == 0) null else dummyBoard[row][col],
                                     modifier = Modifier.padding(
                                         end = if ((col + 1) % 3 == 0) 12.dp else 4.dp,
                                         bottom = if ((row + 1) % 3 == 0) 12.dp else 4.dp
@@ -115,9 +114,9 @@ private fun Preview() {
                 LazyVerticalGrid(columns = GridCells.Fixed(5) ){
                     items(10){
                         if(it == 9) InputButton(type = InputButtonType.ERASER, onClick = {
-                            updateNumber(newNum = it+1, row = selectedRow ?: -1, col = selectedColumn ?: -1, board = boardState)
+                            updateNumber(newNum = it+1, row = selectedRow ?: -1, col = selectedColumn ?: -1, board = dummyBoard)
                         }) else InputButton(number = it+1, onClick = {
-                            updateNumber(newNum = 0, row = selectedRow ?: -1, col = selectedColumn ?: -1, board = boardState)
+                            updateNumber(newNum = 0, row = selectedRow ?: -1, col = selectedColumn ?: -1, board = dummyBoard)
                         })
                     }
                 }
