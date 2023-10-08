@@ -5,7 +5,10 @@ orbs:
 
 jobs:
   test:
-    executor: android/android
+    executor:
+      name: android/android-machine
+      tag: "202102-01"
+      resource-class: large
     steps:
       - checkout
       - run:
@@ -63,4 +66,5 @@ jobs:
 workflows:
   test:
     jobs:
-      -test
+      - test
+      - android-test
