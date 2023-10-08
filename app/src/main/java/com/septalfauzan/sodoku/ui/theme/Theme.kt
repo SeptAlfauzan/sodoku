@@ -11,6 +11,7 @@ private val DarkColorPalette = darkColorScheme(
     inversePrimary = DarkGrayBlueVariant,
     secondary = DarkGrayBlue,
     surface = DarkGrayBlueSurface,
+    onErrorContainer = DarkRedPastel,
 )
 
 private val LightColorPalette = lightColorScheme(
@@ -19,6 +20,7 @@ private val LightColorPalette = lightColorScheme(
     secondary = LightGrayBlue,
     surface = White,
     background = BlueishWhite,
+    onErrorContainer = RedPastel,
     /* Other default colors to override
     background = Color.White,
     surface = Color.White,

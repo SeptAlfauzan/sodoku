@@ -80,4 +80,5 @@ dependencies {
 
     implementation("androidx.compose.material3:material3-window-size-class")
 
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.12'
 }

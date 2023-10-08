@@ -1,7 +1,7 @@
 package com.septalfauzan.sodoku.core.domain.usecase
 
 import android.content.Context
-import androidx.compose.runtime.snapshots.SnapshotStateList
+import android.util.Log
 import com.septalfauzan.sodoku.R
 import com.septalfauzan.sodoku.core.domain.SudokuRepositoryInterface
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -11,9 +11,26 @@ class SudokuGameInteractor @Inject constructor(
     @ApplicationContext private val context: Context,
     private val repository: SudokuRepositoryInterface
 ) : SudokuGameUseCaseInterface {
-    override fun getBoard(): List<List<Int>> {
+    override suspend fun getBoard(): List<List<Int>> {
         val jsonStr = context.resources.openRawResource(R.raw.empty_board).bufferedReader()
             .use { it.readText() }
-        return repository.getBoard(jsonStr)
+        val gameReadyBoard = repository.getGameReadyBoard()
+        val plainBoard = repository.getPlainBoard(jsonStr)
+        Log.d("TAG", "get game ready board: $gameReadyBoard")
+        Log.d("TAG", "get plain board: $plainBoard")
+        return gameReadyBoard
+    }
+    override suspend fun getBoardSolution(board: List<List<Int>>): List<List<Int>> = repository.getBoardGameSollution(board)
+    override fun compareBoardCell(
+        value: Int,
+        solutionBoard: List<List<Int>>,
+        row: Int,
+        col: Int
+    ): Boolean {
+        try {
+            return repository.compareBoardsCell(value, solutionBoard, row, col)
+        }catch (e: Exception){
+            throw e
+        }
     }
 }

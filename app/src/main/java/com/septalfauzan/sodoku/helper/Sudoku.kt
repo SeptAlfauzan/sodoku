@@ -130,9 +130,9 @@ class Sudoku(override val gridSize: Int) : SudokuInterface() {
      * @return two dimensional list act as sudoku board, with few cell occupy with valid number
      */
     override fun generateRandomSeed(cellsOccupy: Int): List<List<Int>> {
-        if (cellsOccupy >= gridSize) throw Exception("Maximum cell occupied must be less than $gridSize!")
 
         try {
+            if (cellsOccupy >= gridSize) throw Exception("Maximum cell occupied must be less than $gridSize!")
             val blankBoard = (0 until gridSize).map {
                 (0 until gridSize).map { 0 }.toMutableList()
             }.toMutableList()
@@ -153,6 +153,31 @@ class Sudoku(override val gridSize: Int) : SudokuInterface() {
                 }
             }
         } catch (e: Exception) {
+            throw e
+        }
+    }
+
+    override fun compareCellValueIgnoreZero(board: List<List<Int>>, solutionBoard: List<List<Int>>, row: Int, col: Int): Boolean {
+        try {
+            if(board.size != solutionBoard.size) throw Exception("Both board and solution board size must be same")
+            if(board[row][col] == 0) return true
+            return board[row][col] == solutionBoard[row][col]
+        }catch (e: Exception){
+            throw e
+        }
+    }
+
+    // TODO: create unit test for this code
+    override fun compareCellValueIgnoreZero(
+        value: Int,
+        solutionBoard: List<List<Int>>,
+        row: Int,
+        col: Int
+    ): Boolean {
+        try {
+            if (value == 0) return true
+            return value == solutionBoard[row][col]
+        }catch (e: Exception){
             throw e
         }
     }

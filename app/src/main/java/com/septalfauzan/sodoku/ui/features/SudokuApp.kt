@@ -27,9 +27,6 @@ fun SudokuApp(
                     HomeScreen(
                         windowSize = windowSize,
                         viewModel = homeVewModel,
-                        boardState = homeVewModel.boardState,
-                        selectedCol = homeVewModel.selectedColumn,
-                        selectedRow = homeVewModel.selectedRow,
                         setSelectedCell = { row, col -> homeVewModel.setSelectedCell(row, col) },
                         updateBoard = { number ->
                             homeVewModel.updateBoard(

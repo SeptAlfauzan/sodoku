@@ -11,7 +11,7 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 internal class SudokuTest {
-    private lateinit var sodoku: Sudoku
+    private lateinit var sudoku: Sudoku
 
     private val blankDummyBoard = listOf(
         listOf(0, 0, 0, 3, 0, 4, 0, 9, 0),
@@ -39,38 +39,38 @@ internal class SudokuTest {
 
     @Before
     fun setup() {
-        sodoku = Sudoku(9)
+        sudoku = Sudoku(9)
     }
 
     @Test
     fun isInRow() {
-        val result = sodoku.isInRow(dummyBoard, 0, 6)
+        val result = sudoku.isInRow(dummyBoard, 0, 6)
         assertEquals(true, result)
     }
 
     @Test
     fun isInColumn() {
-        val result = sodoku.isInColumn(dummyBoard, 2, 3)
+        val result = sudoku.isInColumn(dummyBoard, 2, 3)
         assertEquals(true, result)
     }
 
     @Test
     fun isInBoard() {
-        val result = sodoku.isInBoard(dummyBoard, 4, 2, 3)
+        val result = sudoku.isInBoard(dummyBoard, 4, 2, 3)
         val expected = true
         assertEquals(expected, result)
     }
 
     @Test
     fun isValidPlacement() {
-        val result = sodoku.isValidPlacement(dummyBoard, 4, 3, 1)
+        val result = sudoku.isValidPlacement(dummyBoard, 4, 3, 1)
         val expected = true
         assertEquals(expected, result)
     }
 
     @Test
     fun generateBoard() {
-        val result = sodoku.solveBoard(dummyBoard.map { it.toMutableList() }.toMutableList())
+        val result = sudoku.solveBoard(dummyBoard.map { it.toMutableList() }.toMutableList())
 
         val expected = true
         assertEquals(expected, result)
@@ -82,27 +82,27 @@ internal class SudokuTest {
         val board = dummyBoard.toDeepMutableList()
 //        val result = sodoku.solveBoard(board)
 
-        val unsolved = sodoku.emptiedBoard(board, 8)
-        sodoku.printBoard(unsolved)
+        val unsolved = sudoku.emptiedBoard(board, 8)
+        sudoku.printBoard(unsolved)
     }
 
     @Test
     fun generateUnsolvedBoardFromBlankBoard() {
         val board = blankDummyBoard.map { it.toMutableList() }.toMutableList()
-        sodoku.solveBoard(board)
+        sudoku.solveBoard(board)
 
         println("\nsolved board")
-        sodoku.printBoard(board)
+        sudoku.printBoard(board)
 
-        val unsolved = sodoku.emptiedBoard(board, 8)
+        val unsolved = sudoku.emptiedBoard(board, 8)
         println("\nresult (emptied board)")
-        sodoku.printBoard(unsolved)
+        sudoku.printBoard(unsolved)
     }
 
     @Test
     fun generateBoardWithSeed(){
-        val board = sodoku.generateRandomSeed(8)
-        sodoku.printBoard(board)
+        val board = sudoku.generateRandomSeed(8)
+        sudoku.printBoard(board)
 
         assertNotNull(board)
     }
@@ -110,9 +110,38 @@ internal class SudokuTest {
     @Test
     fun fail_generate_board_with_seed(){
         val exception = assertThrows(Exception::class.java){
-            sodoku.generateRandomSeed(9)
+            sudoku.generateRandomSeed(9)
         }
 
-        assertEquals(exception.message, "Maximum cell occupied must be less than ${sodoku.gridSize}!")
+        assertEquals(exception.message, "Maximum cell occupied must be less than ${sudoku.gridSize}!")
+    }
+
+    @Test
+    fun generate_20_solvable_board_from_random_seed_board(){
+        repeat(20){
+            val board = sudoku.generateRandomSeed(8)
+            val solvable = sudoku.solveBoard(board.toDeepMutableList())
+            assertEquals(true, solvable)
+        }
+    }
+
+    @Test
+    fun compare_two_cell_value_of_two_boards(){
+        val fakeBoard = blankDummyBoard
+        val fakeSolutionBoard = dummyBoard
+
+        val result = sudoku.compareCellValueIgnoreZero(fakeBoard, fakeSolutionBoard, 0, 0)
+        assertEquals(false, result)
+    }
+
+    @Test
+    fun throw_exception_compare_two_cell_boards(){
+        val fakeBoard = listOf<List<Int>>()
+        val fakeSolutionBoard = dummyBoard
+
+        val exception =  assertThrows(Exception::class.java){
+            sudoku.compareCellValueIgnoreZero(fakeBoard, fakeSolutionBoard, 0, 0)
+        }
+        assertEquals("Both board and solution board size must be same", exception.message)
     }
 }

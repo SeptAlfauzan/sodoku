@@ -9,5 +9,7 @@ abstract class SudokuInterface {
     abstract fun solveBoard(board: MutableList<MutableList<Int>>): Boolean
     abstract fun emptiedBoard(board: MutableList<MutableList<Int>>, level: Int): List<List<Int>>
     abstract fun generateRandomSeed(cellsOccupy: Int = 1) : List<List<Int>>
+    abstract fun compareCellValueIgnoreZero(board: List<List<Int>>, solutionBoard:List<List<Int>>, row: Int, col: Int) : Boolean
+    abstract fun compareCellValueIgnoreZero(value: Int, solutionBoard:List<List<Int>>, row: Int, col: Int) : Boolean
     abstract fun printBoard(board: List<List<Int>>)
 }

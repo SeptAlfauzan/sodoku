@@ -19,6 +19,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.septalfauzan.sodoku.core.domain.SudokuBoxCell
+import com.septalfauzan.sodoku.helper.Sudoku
 import com.septalfauzan.sodoku.ui.components.InputButton
 import com.septalfauzan.sodoku.ui.components.InputButtonType
 import com.septalfauzan.sodoku.ui.components.NumberBoxItem
@@ -31,9 +33,6 @@ import kotlin.math.floor
 fun HomeScreen(
     windowSize: WindowWidthSizeClass,
     viewModel: HomeVewModel,
-    boardState: List<List<Int>>,
-    selectedRow: StateFlow<Int?>,
-    selectedCol: StateFlow<Int?>,
     setSelectedCell: (row: Int?, col: Int?) -> Unit,
     updateBoard: (number: Int) -> Unit,
     modifier: Modifier = Modifier
@@ -45,34 +44,40 @@ fun HomeScreen(
         else -> LayoutType.LARGE
     }
 
-    if (layoutType != LayoutType.LARGE) {
-        LayoutPotrait(
-            viewModel,
-            boardState,
-            selectedRow,
-            selectedCol,
-            setSelectedCell,
-            updateBoard,
-            modifier
-        )
-    } else {
-        LayoutLandscape(
-            viewModel,
-            boardState,
-            selectedRow,
-            selectedCol,
-            setSelectedCell,
-            updateBoard,
-            modifier
-        )
+    viewModel.loadingBoard.collectAsState(initial = true).value.let {loading ->
+        when (loading) {
+            false ->{
+                if (layoutType != LayoutType.LARGE) {
+                    LayoutPotrait(
+                        viewModel,
+                        viewModel.boardState,
+                        viewModel.selectedRow,
+                        viewModel.selectedColumn,
+                        setSelectedCell,
+                        updateBoard,
+                        modifier
+                    )
+                } else {
+                    LayoutLandscape(
+                        viewModel,
+                        viewModel.boardState,
+                        viewModel.selectedRow,
+                        viewModel.selectedColumn,
+                        setSelectedCell,
+                        updateBoard,
+                        modifier
+                    )
+                }
+            }
+            true -> Text("Loading board")
+        }
     }
-
 }
 
 @Composable
 fun LayoutPotrait(
     viewModel: HomeVewModel,
-    boardState: List<List<Int>>,
+    boardState: List<List<SudokuBoxCell>>,
     selectedRow: StateFlow<Int?>,
     selectedCol: StateFlow<Int?>,
     setSelectedCell: (row: Int?, col: Int?) -> Unit,
@@ -147,12 +152,14 @@ fun LayoutPotrait(
                     items(81) {
                         val row = floor(it / 9.0).toInt()
                         val col = it % 9
+                        val cell: SudokuBoxCell = boardState[row][col]
                         NumberBoxItem(
                             isSelected = row == selectedRow.collectAsState(initial = null).value && col == selectedCol.collectAsState(
                                 initial = null
                             ).value,
+                            isValid = cell.isValid ?: true,
                             selected = { setSelectedCell(row, col) },
-                            number = if (boardState[row][col] == 0) null else boardState[row][col],
+                            number = if (cell.value == 0) null else cell.value,
                             modifier = Modifier.height(36.dp)
                         )
                     }
@@ -167,7 +174,6 @@ fun LayoutPotrait(
                     items(10) {
                         if (it == 9) InputButton(type = InputButtonType.ERASER, onClick = {
                             updateBoard(0)
-                            viewModel.updateNumber(0)
                         }) else InputButton(number = it + 1, onClick = {
                             updateBoard(it + 1)
                             //                        viewModel.updateNumber(it+1)
@@ -182,7 +188,7 @@ fun LayoutPotrait(
 @Composable
 fun LayoutLandscape(
     viewModel: HomeVewModel,
-    boardState: List<List<Int>>,
+    boardState: List<List<SudokuBoxCell>>,
     selectedRow: StateFlow<Int?>,
     selectedCol: StateFlow<Int?>,
     setSelectedCell: (row: Int?, col: Int?) -> Unit,
@@ -213,12 +219,16 @@ fun LayoutLandscape(
                     items(81) {
                         val row = floor(it / 9.0).toInt()
                         val col = it % 9
+
+                        val cell: SudokuBoxCell = boardState[row][col]
+
                         NumberBoxItem(
                             isSelected = row == selectedRow.collectAsState(initial = null).value && col == selectedCol.collectAsState(
                                 initial = null
                             ).value,
+                            isValid = cell.isValid ?: true,
                             selected = { setSelectedCell(row, col) },
-                            number = if (boardState[row][col] == 0) null else boardState[row][col],
+                            number = if (cell.value == 0) null else cell.value,
                             modifier = Modifier.size(32.dp)
                         )
                     }
@@ -252,7 +262,11 @@ fun LayoutLandscape(
                             .padding(horizontal = 24.dp, vertical = 4.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text("Time 01:23", fontSize = 24.sp, color = MaterialTheme.colorScheme.primary)
+                        Text(
+                            "Time 01:23",
+                            fontSize = 24.sp,
+                            color = MaterialTheme.colorScheme.primary
+                        )
                     }
                     Box(
                         modifier = Modifier
@@ -275,12 +289,13 @@ fun LayoutLandscape(
                     columns = GridCells.Fixed(5),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.weight(1f).padding(top = 32.dp)
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(top = 32.dp)
                 ) {
                     items(10) {
                         if (it == 9) InputButton(type = InputButtonType.ERASER, onClick = {
                             updateBoard(0)
-                            viewModel.updateNumber(0)
                         }) else InputButton(number = it + 1, onClick = {
                             updateBoard(it + 1)
                         }, modifier = Modifier.height(48.dp))

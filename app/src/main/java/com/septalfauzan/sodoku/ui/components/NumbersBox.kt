@@ -27,7 +27,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.septalfauzan.sodoku.ui.theme.SodokuTheme
 
@@ -36,16 +35,24 @@ fun NumberBoxItem(
     isSelected: Boolean,
     selected: () -> Unit,
     number: Int?,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isValid: Boolean = true,
 ) {
     Box(modifier = modifier
         .clip(RoundedCornerShape(4.dp))
         .background(
-            if(number == 0 || number == null) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.secondary
+            if (!isValid) {
+                MaterialTheme.colorScheme.onErrorContainer
+            } else {
+                if (number == 0 || number == null)
+                    MaterialTheme.colorScheme.surface
+                else
+                    MaterialTheme.colorScheme.secondary
+            }
         )
         .border(
             border = BorderStroke(
-                width = if (isSelected) 2.dp else 0.dp,
+                width = if (isSelected) 4.dp else 0.dp,
                 color = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent
             ), shape = RoundedCornerShape(4.dp)
         )
@@ -54,7 +61,8 @@ fun NumberBoxItem(
         }) {
         Text(
             text = number?.toString() ?: "", style = MaterialTheme.typography.titleMedium.copy(
-                textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.primary
+                textAlign = TextAlign.Center,
+                color = if (!isValid) Color.White else MaterialTheme.colorScheme.primary
             ), modifier = Modifier
                 .align(Alignment.Center)
                 .size(24.dp)
@@ -78,8 +86,8 @@ private fun Preview() {
     )
 
 
-    fun updateNumber(newNum: Int, row: Int, col: Int, board: MutableList<MutableList<Int>>){
-        if(row == -1 || col == -1) return
+    fun updateNumber(newNum: Int, row: Int, col: Int, board: MutableList<MutableList<Int>>) {
+        if (row == -1 || col == -1) return
         board[row][col] = newNum
         Log.d("TAG", "updateNumber: $newNum")
     }
@@ -100,7 +108,7 @@ private fun Preview() {
                                         selectedRow = row
                                         selectedColumn = col
                                     },
-                                    number = if(dummyBoard[row][col] == 0) null else dummyBoard[row][col],
+                                    number = if (dummyBoard[row][col] == 0) null else dummyBoard[row][col],
                                     modifier = Modifier.padding(
                                         end = if ((col + 1) % 3 == 0) 12.dp else 4.dp,
                                         bottom = if ((row + 1) % 3 == 0) 12.dp else 4.dp
@@ -111,12 +119,22 @@ private fun Preview() {
                     }
                 }
                 Box(modifier = Modifier.height(32.dp))
-                LazyVerticalGrid(columns = GridCells.Fixed(5) ){
-                    items(10){
-                        if(it == 9) InputButton(type = InputButtonType.ERASER, onClick = {
-                            updateNumber(newNum = it+1, row = selectedRow ?: -1, col = selectedColumn ?: -1, board = dummyBoard)
-                        }) else InputButton(number = it+1, onClick = {
-                            updateNumber(newNum = 0, row = selectedRow ?: -1, col = selectedColumn ?: -1, board = dummyBoard)
+                LazyVerticalGrid(columns = GridCells.Fixed(5)) {
+                    items(10) {
+                        if (it == 9) InputButton(type = InputButtonType.ERASER, onClick = {
+                            updateNumber(
+                                newNum = it + 1,
+                                row = selectedRow ?: -1,
+                                col = selectedColumn ?: -1,
+                                board = dummyBoard
+                            )
+                        }) else InputButton(number = it + 1, onClick = {
+                            updateNumber(
+                                newNum = 0,
+                                row = selectedRow ?: -1,
+                                col = selectedColumn ?: -1,
+                                board = dummyBoard
+                            )
                         })
                     }
                 }

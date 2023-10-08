@@ -1,7 +1,6 @@
 package com.septalfauzan.sodoku.core.domain
 
-data class SudokuBox(
+data class SudokuBoxCell(
     val value: Int,
-    val row: Int,
-    val col: Int
+    val isValid: Boolean? = null
 )
