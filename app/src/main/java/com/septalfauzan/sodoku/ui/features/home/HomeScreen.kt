@@ -90,10 +90,11 @@ fun LayoutPotrait(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Box(
+                    contentAlignment = Alignment.Center,
                     modifier = Modifier
                         .clip(RoundedCornerShape(4.dp))
                         .background(MaterialTheme.colorScheme.surface)
-                        .height(36.dp)
+                        .height(48.dp)
                         .padding(horizontal = 24.dp, vertical = 4.dp)
                 ) {
                     Icon(
@@ -104,19 +105,21 @@ fun LayoutPotrait(
                     )
                 }
                 Box(
-                    Modifier
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
                         .clip(RoundedCornerShape(4.dp))
                         .background(MaterialTheme.colorScheme.surface)
-                        .height(36.dp)
+                        .height(48.dp)
                         .padding(horizontal = 24.dp, vertical = 4.dp)
                 ) {
                     Text("01:23", fontSize = 24.sp, color = MaterialTheme.colorScheme.primary)
                 }
                 Box(
+                    contentAlignment = Alignment.Center,
                     modifier = Modifier
                         .clip(RoundedCornerShape(4.dp))
                         .background(MaterialTheme.colorScheme.surface)
-                        .height(36.dp)
+                        .height(48.dp)
                         .padding(horizontal = 24.dp, vertical = 4.dp)
                 ) {
                     Icon(
