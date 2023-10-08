@@ -106,7 +106,7 @@ unit tests:
           path: app\build\outputs\androidTest-results
 
 workflows:
-  build_and_deploy:
+  test:
     jobs:
       - build
       - instrumented_test:
