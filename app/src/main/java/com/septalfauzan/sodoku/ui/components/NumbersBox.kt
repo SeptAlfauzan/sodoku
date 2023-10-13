@@ -28,7 +28,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.septalfauzan.sodoku.ui.theme.SodokuTheme
+import com.septalfauzan.sodoku.ui.theme.SudokuTheme
 
 @Composable
 fun NumberBoxItem(
@@ -92,7 +92,7 @@ private fun Preview() {
         Log.d("TAG", "updateNumber: $newNum")
     }
 
-    SodokuTheme {
+    SudokuTheme {
         Surface {
             Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
                 var selectedRow: Int? by remember { mutableStateOf(null) }

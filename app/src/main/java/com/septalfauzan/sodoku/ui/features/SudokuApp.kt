@@ -26,13 +26,13 @@ fun SudokuApp(
                 composable(Screen.Home.route) {
                     HomeScreen(
                         windowSize = windowSize,
-                        viewModel = homeVewModel,
+                        boardState = homeVewModel.boardState,
+                        selectedRow = homeVewModel.selectedRow,
+                        selectedColumn = homeVewModel.selectedColumn,
+                        loadingBoard = homeVewModel.loadingBoard,
+                        updateBoard = {number -> homeVewModel.updateBoard(number)},
                         setSelectedCell = { row, col -> homeVewModel.setSelectedCell(row, col) },
-                        updateBoard = { number ->
-                            homeVewModel.updateBoard(
-                                number,
-                            )
-                        })
+                    )
                 }
             }
         }

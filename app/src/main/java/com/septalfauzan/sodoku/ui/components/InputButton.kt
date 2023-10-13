@@ -7,6 +7,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -14,12 +18,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.septalfauzan.sodoku.R
 
 enum class InputButtonType {
     NUMBER,
-    ERASER
+    ERASER,
+    BACK,
+    RETRY
 }
 
 @Composable
@@ -36,16 +43,30 @@ fun InputButton(
         .background(MaterialTheme.colorScheme.surface),
         contentAlignment = Alignment.Center
     ) {
-        if (type == InputButtonType.NUMBER) {
-            Text(
+        when (type) {
+            InputButtonType.NUMBER -> Text(
                 text = number.toString(),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.primary
             )
-        } else {
-            Image(
+
+            InputButtonType.ERASER -> Image(
                 painter = painterResource(id = R.drawable.eraser_1),
                 contentDescription = "eraser"
+            )
+
+            InputButtonType.RETRY -> Icon(
+                modifier = Modifier.size(24.dp),
+                imageVector = Icons.Default.Refresh,
+                contentDescription = stringResource(R.string.retry_button),
+                tint = MaterialTheme.colorScheme.primary
+            )
+
+            InputButtonType.BACK -> Icon(
+                modifier = Modifier.size(24.dp),
+                imageVector = Icons.Default.ArrowBack,
+                contentDescription = stringResource(R.string.back_button),
+                tint = MaterialTheme.colorScheme.primary
             )
         }
     }

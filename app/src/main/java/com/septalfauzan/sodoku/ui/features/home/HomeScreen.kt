@@ -6,33 +6,35 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.tooling.preview.Devices
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.septalfauzan.sodoku.core.domain.SudokuBoxCell
-import com.septalfauzan.sodoku.helper.Sudoku
+import com.septalfauzan.sodoku.helper.DataMapper.toSudokuBoxCellStateList
 import com.septalfauzan.sodoku.ui.components.InputButton
 import com.septalfauzan.sodoku.ui.components.InputButtonType
 import com.septalfauzan.sodoku.ui.components.NumberBoxItem
-import com.septalfauzan.sodoku.ui.theme.GrayBlue
+import com.septalfauzan.sodoku.ui.theme.SudokuTheme
 import com.septalfauzan.sodoku.utils.LayoutType
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlin.math.floor
 
 @Composable
 fun HomeScreen(
     windowSize: WindowWidthSizeClass,
-    viewModel: HomeVewModel,
+    boardState: List<List<SudokuBoxCell>>,
+    selectedRow: StateFlow<Int?>,
+    selectedColumn: StateFlow<Int?>,
+    loadingBoard: StateFlow<Boolean>,
     setSelectedCell: (row: Int?, col: Int?) -> Unit,
     updateBoard: (number: Int) -> Unit,
     modifier: Modifier = Modifier
@@ -44,31 +46,30 @@ fun HomeScreen(
         else -> LayoutType.LARGE
     }
 
-    viewModel.loadingBoard.collectAsState(initial = true).value.let {loading ->
+    loadingBoard.collectAsState(initial = true).value.let { loading ->
         when (loading) {
-            false ->{
+            false -> {
                 if (layoutType != LayoutType.LARGE) {
                     LayoutPotrait(
-                        viewModel,
-                        viewModel.boardState,
-                        viewModel.selectedRow,
-                        viewModel.selectedColumn,
+                        boardState,
+                        selectedRow,
+                        selectedColumn,
                         setSelectedCell,
                         updateBoard,
                         modifier
                     )
                 } else {
                     LayoutLandscape(
-                        viewModel,
-                        viewModel.boardState,
-                        viewModel.selectedRow,
-                        viewModel.selectedColumn,
+                        boardState,
+                        selectedRow,
+                        selectedColumn,
                         setSelectedCell,
                         updateBoard,
                         modifier
                     )
                 }
             }
+
             true -> Text("Loading board")
         }
     }
@@ -76,7 +77,6 @@ fun HomeScreen(
 
 @Composable
 fun LayoutPotrait(
-    viewModel: HomeVewModel,
     boardState: List<List<SudokuBoxCell>>,
     selectedRow: StateFlow<Int?>,
     selectedCol: StateFlow<Int?>,
@@ -94,21 +94,7 @@ fun LayoutPotrait(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(4.dp))
-                        .background(MaterialTheme.colorScheme.surface)
-                        .height(48.dp)
-                        .padding(horizontal = 24.dp, vertical = 4.dp)
-                ) {
-                    Icon(
-                        modifier = Modifier.size(24.dp),
-                        imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "back button",
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                }
+                InputButton(onClick = {  }, type = InputButtonType.BACK)
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
@@ -119,21 +105,7 @@ fun LayoutPotrait(
                 ) {
                     Text("01:23", fontSize = 24.sp, color = MaterialTheme.colorScheme.primary)
                 }
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(4.dp))
-                        .background(MaterialTheme.colorScheme.surface)
-                        .height(48.dp)
-                        .padding(horizontal = 24.dp, vertical = 4.dp)
-                ) {
-                    Icon(
-                        modifier = Modifier.size(24.dp),
-                        imageVector = Icons.Default.Refresh,
-                        contentDescription = "retry button",
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                }
+                InputButton(onClick = { /*TODO*/ }, type = InputButtonType.RETRY)
             }
 
             Box(Modifier.height(44.dp))
@@ -187,7 +159,6 @@ fun LayoutPotrait(
 
 @Composable
 fun LayoutLandscape(
-    viewModel: HomeVewModel,
     boardState: List<List<SudokuBoxCell>>,
     selectedRow: StateFlow<Int?>,
     selectedCol: StateFlow<Int?>,
@@ -238,21 +209,7 @@ fun LayoutLandscape(
             Box(modifier = Modifier.width(28.dp))
             Column(Modifier.weight(1f)) {
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Box(
-                        modifier = Modifier
-                            .height(48.dp)
-                            .clip(RoundedCornerShape(4.dp))
-                            .background(MaterialTheme.colorScheme.surface)
-                            .padding(horizontal = 24.dp, vertical = 4.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            modifier = Modifier.size(24.dp),
-                            imageVector = Icons.Default.Home,
-                            contentDescription = "back button",
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                    }
+                    InputButton(onClick = { /*TODO*/ }, type = InputButtonType.BACK)
                     Box(
                         Modifier
                             .height(48.dp)
@@ -268,21 +225,7 @@ fun LayoutLandscape(
                             color = MaterialTheme.colorScheme.primary
                         )
                     }
-                    Box(
-                        modifier = Modifier
-                            .height(48.dp)
-                            .clip(RoundedCornerShape(4.dp))
-                            .background(MaterialTheme.colorScheme.surface)
-                            .padding(horizontal = 24.dp, vertical = 4.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            modifier = Modifier.size(24.dp),
-                            imageVector = Icons.Default.Refresh,
-                            contentDescription = "retry button",
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                    }
+                    InputButton(onClick = { /*TODO*/ }, type = InputButtonType.RETRY)
                 }
 
                 LazyVerticalGrid(
@@ -302,6 +245,36 @@ fun LayoutLandscape(
                     }
                 }
             }
+        }
+    }
+}
+
+
+@Preview(device = Devices.PIXEL_4, showBackground = true)
+@Composable
+private fun Preview() {
+    val blankDummyBoard = listOf(
+        listOf(0, 0, 0, 3, 0, 4, 0, 9, 0),
+        listOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
+        listOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
+        listOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
+        listOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
+        listOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
+        listOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
+        listOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
+        listOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
+    )
+
+    SudokuTheme {
+        Surface {
+            HomeScreen(
+                windowSize = WindowWidthSizeClass.Compact,
+                boardState = blankDummyBoard.toSudokuBoxCellStateList(),
+                selectedRow = MutableStateFlow(0),
+                selectedColumn = MutableStateFlow(0),
+                loadingBoard = MutableStateFlow(false),
+                setSelectedCell = { _, _ -> },
+                updateBoard = { })
         }
     }
 }

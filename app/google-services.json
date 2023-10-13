@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "667633533225",
+    "firebase_url": "https://chit-chat-109bc.firebaseio.com",
+    "project_id": "chit-chat-109bc",
+    "storage_bucket": "chit-chat-109bc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:667633533225:android:2bb1a09c315a003d7cf738",
+        "android_client_info": {
+          "package_name": "com.septalfauzan.sodoku"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "667633533225-afbng1mp9k56f49e8h9fa9e605sjdgc0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDClIwX1z3FBXuTU9SekV8tTLLpmHshwOY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "667633533225-afbng1mp9k56f49e8h9fa9e605sjdgc0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

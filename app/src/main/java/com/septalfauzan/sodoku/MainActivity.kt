@@ -13,7 +13,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import com.septalfauzan.sodoku.ui.features.SudokuApp
 import com.septalfauzan.sodoku.ui.features.home.HomeVewModel
-import com.septalfauzan.sodoku.ui.theme.SodokuTheme
+import com.septalfauzan.sodoku.ui.theme.SudokuTheme
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.ui.graphics.Color
@@ -35,7 +35,7 @@ class MainActivity : ComponentActivity() {
 
 
         setContent {
-            SodokuTheme {
+            SudokuTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
