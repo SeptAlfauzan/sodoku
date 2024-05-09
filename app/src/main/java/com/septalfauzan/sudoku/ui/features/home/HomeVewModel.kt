@@ -33,6 +33,10 @@ class HomeVewModel @Inject constructor(private val useCase: SudokuGameUseCaseInt
     private val _loadingBoard: MutableStateFlow<Boolean> = MutableStateFlow(true)
     val loadingBoard: StateFlow<Boolean> = _loadingBoard
 
+    val initialGameLife = 3
+    private val _gameLife: MutableStateFlow<Int> = MutableStateFlow(initialGameLife)
+    val gameLife: StateFlow<Int> = _gameLife
+
     init {
         initGame()
     }
@@ -53,6 +57,10 @@ class HomeVewModel @Inject constructor(private val useCase: SudokuGameUseCaseInt
                         selectedRow.value!!,
                         selectedColumn.value!!
                     )
+
+                    if(!isValid){
+                        _gameLife.value -= 1
+                    }
 
                     _boardState[selectedRow.value!!][selectedColumn.value!!] =
                         SudokuBoxCell(value = number, isValid = isValid)

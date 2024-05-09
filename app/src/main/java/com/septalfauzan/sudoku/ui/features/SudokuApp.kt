@@ -6,6 +6,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -31,6 +32,8 @@ fun SudokuApp(
                         selectedColumn = homeVewModel.selectedColumn,
                         loadingBoard = homeVewModel.loadingBoard,
                         updateBoard = {number -> homeVewModel.updateBoard(number)},
+                        gameLife = homeVewModel.gameLife.collectAsState().value,
+                        initialGameLife = homeVewModel.initialGameLife,
                         setSelectedCell = { row, col -> homeVewModel.setSelectedCell(row, col) },
                     )
                 }

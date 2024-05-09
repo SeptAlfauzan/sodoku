@@ -4,9 +4,14 @@ import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -14,10 +19,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.septalfauzan.sudoku.R
 import com.septalfauzan.sudoku.core.domain.SudokuBoxCell
 import com.septalfauzan.sudoku.helper.DataMapper.toSudokuBoxCellStateList
 import com.septalfauzan.sudoku.ui.components.InputButton
@@ -41,6 +48,8 @@ fun HomeScreen(
     loadingBoard: StateFlow<Boolean>,
     setSelectedCell: (row: Int?, col: Int?) -> Unit,
     updateBoard: (number: Int) -> Unit,
+    gameLife: Int,
+    initialGameLife: Int,
     modifier: Modifier = Modifier
 ) {
     var layoutType: LayoutType by remember { mutableStateOf(LayoutType.PORTRAIT) }
@@ -62,6 +71,8 @@ fun HomeScreen(
                         selectedColumn,
                         setSelectedCell,
                         updateBoard,
+                        gameLife,
+                        initialGameLife,
                         modifier
                     )
                 } else {
@@ -71,6 +82,8 @@ fun HomeScreen(
                         selectedColumn,
                         setSelectedCell,
                         updateBoard,
+                        gameLife,
+                        initialGameLife,
                         modifier
                     )
                 }
@@ -86,8 +99,11 @@ fun LayoutPotrait(
     selectedCol: StateFlow<Int?>,
     setSelectedCell: (row: Int?, col: Int?) -> Unit,
     updateBoard: (number: Int) -> Unit,
+    gameLife: Int,
+    initialGameLife: Int,
     modifier: Modifier
 ) {
+
     Box(modifier = modifier.fillMaxSize()) {
         Column(
             Modifier
@@ -95,7 +111,8 @@ fun LayoutPotrait(
                 .padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 InputButton(onClick = {
@@ -116,6 +133,13 @@ fun LayoutPotrait(
                     Text("01:23", fontSize = 24.sp, color = MaterialTheme.colorScheme.primary)
                 }
                 InputButton(onClick = { /*TODO*/ }, type = InputButtonType.RETRY)
+            }
+            LazyRow(modifier = Modifier.fillMaxWidth().height(64.dp), horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically) {
+                items(initialGameLife){
+                    Icon(imageVector =
+                    if(it < gameLife)
+                    Icons.Default.Favorite else Icons.Default.FavoriteBorder, contentDescription = stringResource(R.string.lifepoint_ic), tint = if(it < gameLife) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onErrorContainer)
+                }
             }
             Column(
                 Modifier
@@ -171,6 +195,8 @@ fun LayoutLandscape(
     selectedCol: StateFlow<Int?>,
     setSelectedCell: (row: Int?, col: Int?) -> Unit,
     updateBoard: (number: Int) -> Unit,
+    gameLife: Int,
+    initialGameLife: Int,
     modifier: Modifier
 ) {
 
@@ -281,6 +307,8 @@ private fun Preview() {
                 selectedColumn = MutableStateFlow(0),
                 loadingBoard = MutableStateFlow(false),
                 setSelectedCell = { _, _ -> },
+                gameLife = 2,
+                initialGameLife = 2,
                 updateBoard = { })
         }
     }
