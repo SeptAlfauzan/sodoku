@@ -50,6 +50,7 @@ fun HomeScreen(
     updateBoard: (number: Int) -> Unit,
     gameLife: Int,
     initialGameLife: Int,
+    countDownTimer: Int,
     modifier: Modifier = Modifier
 ) {
     var layoutType: LayoutType by remember { mutableStateOf(LayoutType.PORTRAIT) }
@@ -73,6 +74,7 @@ fun HomeScreen(
                         updateBoard,
                         gameLife,
                         initialGameLife,
+                        countDownTimer,
                         modifier
                     )
                 } else {
@@ -84,6 +86,7 @@ fun HomeScreen(
                         updateBoard,
                         gameLife,
                         initialGameLife,
+                        countDownTimer,
                         modifier
                     )
                 }
@@ -101,6 +104,7 @@ fun LayoutPotrait(
     updateBoard: (number: Int) -> Unit,
     gameLife: Int,
     initialGameLife: Int,
+    countDownTimer: Int,
     modifier: Modifier
 ) {
 
@@ -130,7 +134,7 @@ fun LayoutPotrait(
                         .height(48.dp)
                         .padding(horizontal = 24.dp, vertical = 4.dp)
                 ) {
-                    Text("01:23", fontSize = 24.sp, color = MaterialTheme.colorScheme.primary)
+                    Text(countDownTimer.toString(), fontSize = 24.sp, color = MaterialTheme.colorScheme.primary)
                 }
                 InputButton(onClick = { /*TODO*/ }, type = InputButtonType.RETRY)
             }
@@ -197,6 +201,7 @@ fun LayoutLandscape(
     updateBoard: (number: Int) -> Unit,
     gameLife: Int,
     initialGameLife: Int,
+    countDownTimer: Int,
     modifier: Modifier
 ) {
 
@@ -309,6 +314,7 @@ private fun Preview() {
                 setSelectedCell = { _, _ -> },
                 gameLife = 2,
                 initialGameLife = 2,
+                countDownTimer = 120,
                 updateBoard = { })
         }
     }

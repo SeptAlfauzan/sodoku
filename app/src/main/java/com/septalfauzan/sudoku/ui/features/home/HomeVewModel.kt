@@ -1,5 +1,6 @@
 package com.septalfauzan.sudoku.ui.features.home
 
+import android.os.CountDownTimer
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -36,6 +37,22 @@ class HomeVewModel @Inject constructor(private val useCase: SudokuGameUseCaseInt
     val initialGameLife = 3
     private val _gameLife: MutableStateFlow<Int> = MutableStateFlow(initialGameLife)
     val gameLife: StateFlow<Int> = _gameLife
+
+    private val initialCountDownTimer = 120
+    private val _countDown: MutableStateFlow<Int> = MutableStateFlow(initialCountDownTimer)
+    val countDownTimer: StateFlow<Int> = _countDown
+
+    private val timer = object: CountDownTimer(120000, 1000) {
+        override fun onTick(millisUntilFinished: Long) {
+            _countDown.value -= 1
+        }
+
+
+        override fun onFinish() {
+            _countDown.value = 0
+        }
+    }
+
 
     init {
         initGame()
@@ -101,6 +118,7 @@ class HomeVewModel @Inject constructor(private val useCase: SudokuGameUseCaseInt
             } finally {
                 delay(1500)
                 _loadingBoard.value = false
+                timer.start()
             }
         }
     }
