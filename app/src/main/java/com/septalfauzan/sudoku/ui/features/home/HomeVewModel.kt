@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.septalfauzan.sudoku.core.domain.SudokuBoxCell
 import com.septalfauzan.sudoku.core.domain.usecase.SudokuGameUseCaseInterface
 import com.septalfauzan.sudoku.helper.DataMapper.toSudokuBoxCellStateList
+import com.septalfauzan.sudoku.ui.common.GameState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -42,14 +43,16 @@ class HomeVewModel @Inject constructor(private val useCase: SudokuGameUseCaseInt
     private val _countDown: MutableStateFlow<Int> = MutableStateFlow(initialCountDownTimer)
     val countDownTimer: StateFlow<Int> = _countDown
 
-    private val timer = object: CountDownTimer(120000, 1000) {
+    private val _gameState: MutableStateFlow<GameState> = MutableStateFlow(GameState.NOT_STARTED)
+    val gameState: StateFlow<GameState> = _gameState
+
+    private val timer = object: CountDownTimer((initialCountDownTimer * 1000).toLong(), 1000) {
         override fun onTick(millisUntilFinished: Long) {
             _countDown.value -= 1
         }
-
-
         override fun onFinish() {
             _countDown.value = 0
+            _gameState.value = GameState.GAME_OVER
         }
     }
 
@@ -77,6 +80,7 @@ class HomeVewModel @Inject constructor(private val useCase: SudokuGameUseCaseInt
 
                     if(!isValid){
                         _gameLife.value -= 1
+                        if(_gameLife.value == 0) _gameState.value = GameState.GAME_OVER
                     }
 
                     _boardState[selectedRow.value!!][selectedColumn.value!!] =
@@ -99,6 +103,7 @@ class HomeVewModel @Inject constructor(private val useCase: SudokuGameUseCaseInt
     private suspend fun List<List<Int>>.getBoardSolution() {
         try {
             val boardSolution = useCase.getBoardSolution(this)
+            _boardState.clear()
             _boardState.addAll(this.toSudokuBoxCellStateList())
             _boardSolutionState = boardSolution
         } catch (e: Exception) {
@@ -107,8 +112,12 @@ class HomeVewModel @Inject constructor(private val useCase: SudokuGameUseCaseInt
         }
     }
 
-    private fun initGame() {
+    fun initGame() {
         _loadingBoard.value = true
+        _gameState.value = GameState.ON_GAME
+        _gameLife.value = initialGameLife
+        _countDown.value = initialCountDownTimer
+
         viewModelScope.launch(Dispatchers.Default) {
             try {
                 getBoard().getBoardSolution()

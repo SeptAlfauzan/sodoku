@@ -35,6 +35,8 @@ fun SudokuApp(
                         gameLife = homeVewModel.gameLife.collectAsState().value,
                         initialGameLife = homeVewModel.initialGameLife,
                         countDownTimer = homeVewModel.countDownTimer.collectAsState().value,
+                        gameState = homeVewModel.gameState.collectAsState().value,
+                        restartGame = { homeVewModel.initGame() },
                         setSelectedCell = { row, col -> homeVewModel.setSelectedCell(row, col) },
                     )
                 }

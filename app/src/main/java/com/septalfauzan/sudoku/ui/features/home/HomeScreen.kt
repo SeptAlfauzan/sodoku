@@ -1,6 +1,5 @@
 package com.septalfauzan.sudoku.ui.features.home
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.foundation.layout.*
@@ -11,6 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -28,11 +28,13 @@ import com.septalfauzan.sudoku.R
 import com.septalfauzan.sudoku.core.domain.SudokuBoxCell
 import com.septalfauzan.sudoku.helper.DataMapper.toSudokuBoxCellStateList
 import com.septalfauzan.sudoku.helper.formatTimer
+import com.septalfauzan.sudoku.ui.common.GameState
 import com.septalfauzan.sudoku.ui.widgets.InputButton
 import com.septalfauzan.sudoku.ui.widgets.InputButtonType
 import com.septalfauzan.sudoku.ui.widgets.NumberBoxItem
 import com.septalfauzan.sudoku.ui.features.loading.LoadingScreen
 import com.septalfauzan.sudoku.ui.theme.SudokuTheme
+import com.septalfauzan.sudoku.ui.widgets.AlertDialogCustom
 import com.septalfauzan.sudoku.utils.LayoutType
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -44,9 +46,11 @@ import kotlin.math.floor
 fun HomeScreen(
     windowSize: WindowWidthSizeClass,
     boardState: List<List<SudokuBoxCell>>,
+    gameState: GameState,
     selectedRow: StateFlow<Int?>,
     selectedColumn: StateFlow<Int?>,
     loadingBoard: StateFlow<Boolean>,
+    restartGame: () -> Unit,
     setSelectedCell: (row: Int?, col: Int?) -> Unit,
     updateBoard: (number: Int) -> Unit,
     gameLife: Int,
@@ -62,10 +66,16 @@ fun HomeScreen(
     }
 
     loadingBoard.collectAsState(initial = true).value.let { loading ->
-        Log.d("TAG", "HomeScreen: $loading")
         when (loading) {
             true -> LoadingScreen()
             false -> {
+                if(gameState == GameState.GAME_OVER) AlertDialogCustom(
+                    onDismissRequest = { /*TODO*/ },
+                    onConfirmation = restartGame,
+                    dialogTitle = "Game Over!",
+                    dialogText = "lorem ipsum dolor emet",
+                    icon = Icons.Default.Warning
+                )
                 if (layoutType != LayoutType.LARGE) {
                     LayoutPotrait(
                         boardState,
@@ -74,6 +84,7 @@ fun HomeScreen(
                         setSelectedCell,
                         updateBoard,
                         gameLife,
+                        restartGame,
                         initialGameLife,
                         countDownTimer,
                         modifier
@@ -86,6 +97,7 @@ fun HomeScreen(
                         setSelectedCell,
                         updateBoard,
                         gameLife,
+                        restartGame,
                         initialGameLife,
                         countDownTimer,
                         modifier
@@ -104,6 +116,7 @@ fun LayoutPotrait(
     setSelectedCell: (row: Int?, col: Int?) -> Unit,
     updateBoard: (number: Int) -> Unit,
     gameLife: Int,
+    restartGame: () -> Unit,
     initialGameLife: Int,
     countDownTimer: Int,
     modifier: Modifier
@@ -141,7 +154,7 @@ fun LayoutPotrait(
                         color = MaterialTheme.colorScheme.primary
                     )
                 }
-                InputButton(onClick = { /*TODO*/ }, type = InputButtonType.RETRY)
+                InputButton(onClick = restartGame, type = InputButtonType.RETRY)
             }
             LazyRow(
                 modifier = Modifier
@@ -215,6 +228,7 @@ fun LayoutLandscape(
     setSelectedCell: (row: Int?, col: Int?) -> Unit,
     updateBoard: (number: Int) -> Unit,
     gameLife: Int,
+    restartGame: () -> Unit,
     initialGameLife: Int,
     countDownTimer: Int,
     modifier: Modifier
@@ -330,6 +344,8 @@ private fun Preview() {
                 gameLife = 2,
                 initialGameLife = 2,
                 countDownTimer = 120,
+                gameState = GameState.NOT_STARTED,
+                restartGame = {},
                 updateBoard = { })
         }
     }
