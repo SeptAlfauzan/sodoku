@@ -1,4 +1,4 @@
-package com.septalfauzan.sudoku.ui.components
+package com.septalfauzan.sudoku.ui.widgets
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.util.Log

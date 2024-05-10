@@ -1,4 +1,4 @@
-package com.septalfauzan.sudoku.ui.components
+package com.septalfauzan.sudoku.ui.widgets
 
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable

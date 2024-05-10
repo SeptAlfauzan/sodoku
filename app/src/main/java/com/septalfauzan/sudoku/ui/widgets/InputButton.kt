@@ -1,4 +1,4 @@
-package com.septalfauzan.sudoku.ui.components
+package com.septalfauzan.sudoku.ui.widgets
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

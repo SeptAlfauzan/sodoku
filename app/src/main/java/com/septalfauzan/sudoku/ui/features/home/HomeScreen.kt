@@ -27,9 +27,10 @@ import androidx.compose.ui.unit.sp
 import com.septalfauzan.sudoku.R
 import com.septalfauzan.sudoku.core.domain.SudokuBoxCell
 import com.septalfauzan.sudoku.helper.DataMapper.toSudokuBoxCellStateList
-import com.septalfauzan.sudoku.ui.components.InputButton
-import com.septalfauzan.sudoku.ui.components.InputButtonType
-import com.septalfauzan.sudoku.ui.components.NumberBoxItem
+import com.septalfauzan.sudoku.helper.formatTimer
+import com.septalfauzan.sudoku.ui.widgets.InputButton
+import com.septalfauzan.sudoku.ui.widgets.InputButtonType
+import com.septalfauzan.sudoku.ui.widgets.NumberBoxItem
 import com.septalfauzan.sudoku.ui.features.loading.LoadingScreen
 import com.septalfauzan.sudoku.ui.theme.SudokuTheme
 import com.septalfauzan.sudoku.utils.LayoutType
@@ -62,8 +63,8 @@ fun HomeScreen(
 
     loadingBoard.collectAsState(initial = true).value.let { loading ->
         Log.d("TAG", "HomeScreen: $loading")
-        when (loading){
-        true -> LoadingScreen()
+        when (loading) {
+            true -> LoadingScreen()
             false -> {
                 if (layoutType != LayoutType.LARGE) {
                     LayoutPotrait(
@@ -134,15 +135,29 @@ fun LayoutPotrait(
                         .height(48.dp)
                         .padding(horizontal = 24.dp, vertical = 4.dp)
                 ) {
-                    Text(countDownTimer.toString(), fontSize = 24.sp, color = MaterialTheme.colorScheme.primary)
+                    Text(
+                        formatTimer(countDownTimer),
+                        fontSize = 24.sp,
+                        color = MaterialTheme.colorScheme.primary
+                    )
                 }
                 InputButton(onClick = { /*TODO*/ }, type = InputButtonType.RETRY)
             }
-            LazyRow(modifier = Modifier.fillMaxWidth().height(64.dp), horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically) {
-                items(initialGameLife){
-                    Icon(imageVector =
-                    if(it < gameLife)
-                    Icons.Default.Favorite else Icons.Default.FavoriteBorder, contentDescription = stringResource(R.string.lifepoint_ic), tint = if(it < gameLife) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onErrorContainer)
+            LazyRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(64.dp),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                items(initialGameLife) {
+                    Icon(
+                        imageVector =
+                        if (it < gameLife)
+                            Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                        contentDescription = stringResource(R.string.lifepoint_ic),
+                        tint = if (it < gameLife) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onErrorContainer
+                    )
                 }
             }
             Column(
