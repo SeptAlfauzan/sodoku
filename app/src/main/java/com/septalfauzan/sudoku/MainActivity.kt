@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import com.septalfauzan.sudoku.ui.features.SudokuApp
-import com.septalfauzan.sudoku.ui.features.home.HomeVewModel
+import com.septalfauzan.sudoku.ui.features.game.GameVewModel
 import com.septalfauzan.sudoku.ui.theme.SudokuTheme
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
@@ -42,7 +42,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val windowSize = calculateWindowSizeClass(this)
 
-                    val homeVewModel: HomeVewModel by viewModels()
+                    val homeVewModel: GameVewModel by viewModels()
                     SudokuApp(homeVewModel = homeVewModel, windowSize = windowSize.widthSizeClass)
                 }
             }

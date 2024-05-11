@@ -1,4 +1,4 @@
-package com.septalfauzan.sudoku.ui.features.home
+package com.septalfauzan.sudoku.ui.features.game
 
 import android.os.CountDownTimer
 import androidx.compose.runtime.mutableStateListOf
@@ -19,7 +19,7 @@ import javax.inject.Inject
 import kotlin.Exception
 
 @HiltViewModel
-class HomeVewModel @Inject constructor(private val useCase: SudokuGameUseCaseInterface) :
+class GameVewModel @Inject constructor(private val useCase: SudokuGameUseCaseInterface) :
     ViewModel() {
     private val _boardState = mutableStateListOf<MutableList<SudokuBoxCell>>()
     val boardState: List<List<SudokuBoxCell>> = _boardState
@@ -58,7 +58,7 @@ class HomeVewModel @Inject constructor(private val useCase: SudokuGameUseCaseInt
 
 
     init {
-        initGame()
+//        initGame()
     }
 
     fun setSelectedCell(row: Int?, col: Int?) {
@@ -138,5 +138,13 @@ class HomeVewModel @Inject constructor(private val useCase: SudokuGameUseCaseInt
                 timer.start()
             }
         }
+    }
+
+    fun clearGameState(){
+        _gameState.value = GameState.NOT_STARTED
+        timer.cancel()
+        _boardState.clear()
+        _selectedColumn.value = null
+        _selectedRow.value = null
     }
 }

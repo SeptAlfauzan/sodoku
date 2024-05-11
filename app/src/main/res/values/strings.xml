@@ -3,4 +3,10 @@
     <string name="retry_button">retry button</string>
     <string name="back_button">back button</string>
     <string name="lifepoint_ic">lifepoint_ic</string>
+    <string name="home_illustration">home illustration</string>
+    <string name="sudoku">Sudoku</string>
+    <string name="let_s_play">Let\'s play!</string>
+    <string name="play">Play</string>
+    <string name="setting_icon">setting icon</string>
+    <string name="play_icon">play icon</string>
 </resources>

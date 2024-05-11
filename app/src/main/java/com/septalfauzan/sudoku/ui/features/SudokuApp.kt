@@ -12,20 +12,28 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.septalfauzan.sudoku.helper.Screen
+import com.septalfauzan.sudoku.ui.features.game.GameScreen
+import com.septalfauzan.sudoku.ui.features.game.GameVewModel
 import com.septalfauzan.sudoku.ui.features.home.HomeScreen
-import com.septalfauzan.sudoku.ui.features.home.HomeVewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SudokuApp(
-    homeVewModel: HomeVewModel, windowSize: WindowWidthSizeClass,
+    homeVewModel: GameVewModel, windowSize: WindowWidthSizeClass,
 ) {
     Scaffold {
         Box(modifier = Modifier.padding(it)) {
             val navController = rememberNavController()
             NavHost(navController = navController, startDestination = Screen.Home.route) {
                 composable(Screen.Home.route) {
-                    HomeScreen(
+                   HomeScreen(
+                       startGame = {homeVewModel.initGame()},
+                       navController = navController
+                   )
+                }
+                composable(Screen.Game.route){
+                    GameScreen(
+                        navController = navController,
                         windowSize = windowSize,
                         boardState = homeVewModel.boardState,
                         selectedRow = homeVewModel.selectedRow,
@@ -37,6 +45,7 @@ fun SudokuApp(
                         countDownTimer = homeVewModel.countDownTimer.collectAsState().value,
                         gameState = homeVewModel.gameState.collectAsState().value,
                         restartGame = { homeVewModel.initGame() },
+                        clearGameState = { homeVewModel.clearGameState() },
                         setSelectedCell = { row, col -> homeVewModel.setSelectedCell(row, col) },
                     )
                 }

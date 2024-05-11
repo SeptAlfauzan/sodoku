@@ -1,352 +1,144 @@
 package com.septalfauzan.sudoku.ui.features.home
 
-import androidx.compose.foundation.background
-import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.shape.RoundedCornerShape
+import android.content.res.Configuration
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.septalfauzan.sudoku.R
-import com.septalfauzan.sudoku.core.domain.SudokuBoxCell
-import com.septalfauzan.sudoku.helper.DataMapper.toSudokuBoxCellStateList
-import com.septalfauzan.sudoku.helper.formatTimer
-import com.septalfauzan.sudoku.ui.common.GameState
-import com.septalfauzan.sudoku.ui.widgets.InputButton
-import com.septalfauzan.sudoku.ui.widgets.InputButtonType
-import com.septalfauzan.sudoku.ui.widgets.NumberBoxItem
-import com.septalfauzan.sudoku.ui.features.loading.LoadingScreen
+import com.septalfauzan.sudoku.helper.Screen
 import com.septalfauzan.sudoku.ui.theme.SudokuTheme
-import com.septalfauzan.sudoku.ui.widgets.AlertDialogCustom
-import com.septalfauzan.sudoku.utils.LayoutType
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import timber.log.Timber
-import java.lang.Exception
-import kotlin.math.floor
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    windowSize: WindowWidthSizeClass,
-    boardState: List<List<SudokuBoxCell>>,
-    gameState: GameState,
-    selectedRow: StateFlow<Int?>,
-    selectedColumn: StateFlow<Int?>,
-    loadingBoard: StateFlow<Boolean>,
-    restartGame: () -> Unit,
-    setSelectedCell: (row: Int?, col: Int?) -> Unit,
-    updateBoard: (number: Int) -> Unit,
-    gameLife: Int,
-    initialGameLife: Int,
-    countDownTimer: Int,
+    navController: NavController,
+    startGame: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
-    var layoutType: LayoutType by remember { mutableStateOf(LayoutType.PORTRAIT) }
-    layoutType = when (windowSize) {
-        WindowWidthSizeClass.Compact -> LayoutType.PORTRAIT
-        WindowWidthSizeClass.Medium -> LayoutType.MEDIUM
-        else -> LayoutType.LARGE
-    }
-
-    loadingBoard.collectAsState(initial = true).value.let { loading ->
-        when (loading) {
-            true -> LoadingScreen()
-            false -> {
-                if(gameState == GameState.GAME_OVER) AlertDialogCustom(
-                    onDismissRequest = { /*TODO*/ },
-                    onConfirmation = restartGame,
-                    dialogTitle = "Game Over!",
-                    dialogText = "lorem ipsum dolor emet",
-                    icon = Icons.Default.Warning
-                )
-                if (layoutType != LayoutType.LARGE) {
-                    LayoutPotrait(
-                        boardState,
-                        selectedRow,
-                        selectedColumn,
-                        setSelectedCell,
-                        updateBoard,
-                        gameLife,
-                        restartGame,
-                        initialGameLife,
-                        countDownTimer,
-                        modifier
-                    )
-                } else {
-                    LayoutLandscape(
-                        boardState,
-                        selectedRow,
-                        selectedColumn,
-                        setSelectedCell,
-                        updateBoard,
-                        gameLife,
-                        restartGame,
-                        initialGameLife,
-                        countDownTimer,
-                        modifier
+    Scaffold(
+        topBar = {
+            TopAppBar(title = {}, actions = {
+                IconButton(onClick = { /*TODO*/ }) {
+                    Icon(
+                        imageVector = Icons.Default.Settings,
+                        contentDescription = stringResource(R.string.setting_icon),
+                        tint = MaterialTheme.colorScheme.primary
                     )
                 }
-            }
+            },
+
+                colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = Color.Transparent)
+            )
         }
-    }
-}
-
-@Composable
-fun LayoutPotrait(
-    boardState: List<List<SudokuBoxCell>>,
-    selectedRow: StateFlow<Int?>,
-    selectedCol: StateFlow<Int?>,
-    setSelectedCell: (row: Int?, col: Int?) -> Unit,
-    updateBoard: (number: Int) -> Unit,
-    gameLife: Int,
-    restartGame: () -> Unit,
-    initialGameLife: Int,
-    countDownTimer: Int,
-    modifier: Modifier
-) {
-
-    Box(modifier = modifier.fillMaxSize()) {
+    ) { padding ->
         Column(
-            Modifier
+            modifier
                 .fillMaxSize()
-                .padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally
+                .padding(padding)
+                .padding(24.dp), verticalArrangement = Arrangement.Center
         ) {
             Row(
                 modifier = Modifier
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .padding(bottom = 136.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                InputButton(onClick = {
-                    try {// TODO: DELETE THIS !!
-                        throw RuntimeException("test error")
-                    } catch (e: Exception) {
-                        Timber.e(e)
-                    }
-                }, type = InputButtonType.BACK)
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(4.dp))
-                        .background(MaterialTheme.colorScheme.surface)
-                        .height(48.dp)
-                        .padding(horizontal = 24.dp, vertical = 4.dp)
-                ) {
+                Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                     Text(
-                        formatTimer(countDownTimer),
-                        fontSize = 24.sp,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                }
-                InputButton(onClick = restartGame, type = InputButtonType.RETRY)
-            }
-            LazyRow(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(64.dp),
-                horizontalArrangement = Arrangement.End,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                items(initialGameLife) {
-                    Icon(
-                        imageVector =
-                        if (it < gameLife)
-                            Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                        contentDescription = stringResource(R.string.lifepoint_ic),
-                        tint = if (it < gameLife) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onErrorContainer
-                    )
-                }
-            }
-            Column(
-                Modifier
-                    .clip(RoundedCornerShape(4.dp))
-                    .background(MaterialTheme.colorScheme.inversePrimary)
-                    .padding(16.dp)
-            ) {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(9),
-                    verticalArrangement = Arrangement.spacedBy(4.dp),
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                ) {
-                    items(81) {
-                        val row = floor(it / 9.0).toInt()
-                        val col = it % 9
-                        val cell: SudokuBoxCell = boardState[row][col]
-                        NumberBoxItem(
-                            isSelected = row == selectedRow.collectAsState(initial = null).value && col == selectedCol.collectAsState(
-                                initial = null
-                            ).value,
-                            isValid = cell.isValid ?: true,
-                            selected = { setSelectedCell(row, col) },
-                            number = if (cell.value == 0) null else cell.value,
-                            modifier = Modifier.height(36.dp)
-                        )
-                    }
-                }
-
-                Box(modifier = Modifier.height(32.dp))
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(5),
-                    verticalArrangement = Arrangement.spacedBy(4.dp),
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    items(10) {
-                        if (it == 9) InputButton(type = InputButtonType.ERASER, onClick = {
-                            updateBoard(0)
-                        }) else InputButton(number = it + 1, onClick = {
-                            updateBoard(it + 1)
-                            //                        viewModel.updateNumber(it+1)
-                        })
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun LayoutLandscape(
-    boardState: List<List<SudokuBoxCell>>,
-    selectedRow: StateFlow<Int?>,
-    selectedCol: StateFlow<Int?>,
-    setSelectedCell: (row: Int?, col: Int?) -> Unit,
-    updateBoard: (number: Int) -> Unit,
-    gameLife: Int,
-    restartGame: () -> Unit,
-    initialGameLife: Int,
-    countDownTimer: Int,
-    modifier: Modifier
-) {
-
-    Box(modifier = modifier.fillMaxSize()) {
-        Row(
-            Modifier
-                .padding(horizontal = 24.dp, vertical = 16.dp)
-                .fillMaxSize()
-        ) {
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .clip(RoundedCornerShape(4.dp))
-                    .background(MaterialTheme.colorScheme.secondary)
-                    .padding(horizontal = 24.dp, vertical = 16.dp)
-            ) {
-                LazyVerticalGrid(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    columns = GridCells.Fixed(9),
-                    verticalArrangement = Arrangement.SpaceBetween,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    items(81) {
-                        val row = floor(it / 9.0).toInt()
-                        val col = it % 9
-
-                        val cell: SudokuBoxCell = boardState[row][col]
-
-                        NumberBoxItem(
-                            isSelected = row == selectedRow.collectAsState(initial = null).value && col == selectedCol.collectAsState(
-                                initial = null
-                            ).value,
-                            isValid = cell.isValid ?: true,
-                            selected = { setSelectedCell(row, col) },
-                            number = if (cell.value == 0) null else cell.value,
-                            modifier = Modifier.size(32.dp)
-                        )
-                    }
-                }
-            }
-
-            Box(modifier = Modifier.width(28.dp))
-            Column(Modifier.weight(1f)) {
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    InputButton(onClick = { /*TODO*/ }, type = InputButtonType.BACK)
-                    Box(
-                        Modifier
-                            .height(48.dp)
-                            .clip(RoundedCornerShape(4.dp))
-                            .background(MaterialTheme.colorScheme.surface)
-                            .weight(1f)
-                            .padding(horizontal = 24.dp, vertical = 4.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            "Time 01:23",
-                            fontSize = 24.sp,
+                        text = stringResource(R.string.sudoku),
+                        style = MaterialTheme.typography.headlineLarge.copy(
+                            fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.primary
                         )
-                    }
-                    InputButton(onClick = { /*TODO*/ }, type = InputButtonType.RETRY)
+                    )
+                    Text(
+                        text = stringResource(R.string.let_s_play),
+                        style = MaterialTheme.typography.headlineLarge.copy(
+                            fontWeight = FontWeight.Light,
+                            color = MaterialTheme.colorScheme.inversePrimary
+                        )
+                    )
                 }
-
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(5),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(top = 32.dp)
-                ) {
-                    items(10) {
-                        if (it == 9) InputButton(type = InputButtonType.ERASER, onClick = {
-                            updateBoard(0)
-                        }) else InputButton(number = it + 1, onClick = {
-                            updateBoard(it + 1)
-                        }, modifier = Modifier.height(48.dp))
-                    }
-                }
+                Image(
+                    painter = painterResource(id = R.drawable.illustration_home),
+                    contentDescription = stringResource(
+                        R.string.home_illustration
+                    )
+                )
             }
+            Button(
+                onClick = {
+                    navController.navigate(Screen.Game.route)
+                    startGame()
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Icon(
+                    imageVector = Icons.Default.PlayArrow,
+                    contentDescription = stringResource(R.string.play_icon)
+                )
+                Text(stringResource(R.string.play))
+            }
+            Button(
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.secondary
+                ),
+                onClick = { /*TODO*/ }, modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Score", color = MaterialTheme.colorScheme.primary)
+            }
+        }
+    }
+
+}
+
+
+@Preview(device = Devices.PIXEL_4, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun HomeScreenDarkTheme() {
+    SudokuTheme {
+        Surface() {
+            HomeScreen(navController = rememberNavController())
         }
     }
 }
 
 
-@Preview(device = Devices.PIXEL_4, showBackground = true)
+@Preview(device = Devices.PIXEL_4)
 @Composable
-private fun Preview() {
-    val blankDummyBoard = listOf(
-        listOf(0, 0, 0, 3, 0, 4, 0, 9, 0),
-        listOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
-        listOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
-        listOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
-        listOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
-        listOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
-        listOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
-        listOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
-        listOf(0, 0, 0, 0, 0, 0, 0, 0, 0),
-    )
-
+private fun HomeScreenLightTheme() {
     SudokuTheme {
-        Surface {
-            HomeScreen(
-                windowSize = WindowWidthSizeClass.Compact,
-                boardState = blankDummyBoard.toSudokuBoxCellStateList(),
-                selectedRow = MutableStateFlow(0),
-                selectedColumn = MutableStateFlow(0),
-                loadingBoard = MutableStateFlow(false),
-                setSelectedCell = { _, _ -> },
-                gameLife = 2,
-                initialGameLife = 2,
-                countDownTimer = 120,
-                gameState = GameState.NOT_STARTED,
-                restartGame = {},
-                updateBoard = { })
+        Surface() {
+            HomeScreen(navController = rememberNavController())
         }
     }
 }
