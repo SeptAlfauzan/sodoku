@@ -144,4 +144,26 @@ internal class SudokuTest {
         }
         assertEquals("Both board and solution board size must be same", exception.message)
     }
+
+    @Test
+    fun generateBoardWithUnresolveMiniBoardCells() {
+        val board = blankDummyBoard.map { it.toMutableList() }.toMutableList()
+        sudoku.solveBoard(board)
+
+        val solved1 = board
+        println("\nsolved board")
+        sudoku.printBoard(board)
+
+        val unsolved = sudoku.getGameReadyBoard(board, 8)
+        println("\nresult (emptied board) $unsolved")
+        sudoku.printBoard(unsolved)
+
+        sudoku.solveBoard(board)
+
+        println("\nsolved board2")
+        sudoku.printBoard(board)
+        val solved2 = board
+
+        assertEquals(solved1, solved2)
+    }
 }

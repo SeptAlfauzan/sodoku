@@ -12,7 +12,9 @@ class SudokuRepository @Inject constructor() :
     override fun getPlainBoard(jsonStr: String): List<List<Int>> = LoadLocalJson.getBoard(jsonStr).board
     override fun getGameReadyBoard(): List<List<Int>> {
         val sudoku = Sudoku(9)
-        return sudoku.generateRandomSeed(3)
+        val board = sudoku.generateRandomSeed(8).toDeepMutableList()
+        sudoku.solveBoard(board)
+        return sudoku.getGameReadyBoard(board, 6)
     }
 
     override fun getBoardGameSollution(board: List<List<Int>>): List<List<Int>> {

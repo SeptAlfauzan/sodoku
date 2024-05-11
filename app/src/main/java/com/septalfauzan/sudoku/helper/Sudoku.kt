@@ -1,5 +1,7 @@
 package com.septalfauzan.sudoku.helper
 
+import kotlin.math.floor
+
 class Sudoku(override val gridSize: Int) : SudokuInterface() {
 
     /**
@@ -127,7 +129,7 @@ class Sudoku(override val gridSize: Int) : SudokuInterface() {
     /**
      * Method to generate sudoku board with occupy cell
      * @param cellsOccupy used to defined how many cell need to occupy from blank board
-     * @return two dimensional list act as sudoku board, with few cell occupy with valid number
+     * @return two dimensional list act as sudoku board, with few cell occupy with valid number, must be below grid size value
      */
     override fun generateRandomSeed(cellsOccupy: Int): List<List<Int>> {
 
@@ -180,6 +182,66 @@ class Sudoku(override val gridSize: Int) : SudokuInterface() {
         }catch (e: Exception){
             throw e
         }
+    }
+
+    /**
+     * Method to clear few cells in board
+     * @param board two dimensional list sudoku board that will be emptied
+     * @param level level to determined how much cell will be cleared, higher more cell will be cleared
+     * @return two dimensional list act as sudoku board
+     */
+    fun emptiedBoard2(board: MutableList<MutableList<Int>>, level: Int): List<List<Int>> {
+        if (level > gridSize || level < 1) throw Exception("level must be between 1 to $gridSize")
+
+        for (row in 0 until gridSize) {
+            val elements = (0 until gridSize).toMutableList()
+
+            while (true) {
+                if (board[row].filter { it == 0 }.size == level) break
+
+                val random = elements.random()
+                if (board[row][random] != 0) {
+                    board[row][random] = 0
+                } else {
+                    elements.remove(random)
+                }
+            }
+        }
+        return board
+    }
+
+    private fun getEmptySubBoardNum(nEmptyCell: Int): Map<Int, List<Int>>{
+        val emptiedNumInSubBoards = mutableMapOf<Int, List<Int>>()
+        if(nEmptyCell > 8 || nEmptyCell < 0) throw IllegalArgumentException("nEmptyCell must be in range 0-8!")
+        for (x in 0 until 9) {
+            emptiedNumInSubBoards[x] =  (0..8).toList().shuffled().take(nEmptyCell)
+        }
+
+        return emptiedNumInSubBoards
+    }
+
+    fun getGameReadyBoard(finishedBoard: MutableList<MutableList<Int>>, nEmptyCell: Int):  MutableList<MutableList<Int>>{
+        if(nEmptyCell > 8 || nEmptyCell < 0) throw IllegalArgumentException("nEmptyCell must be in range 0-8!")
+
+        val emptyNumsSubBoard = getEmptySubBoardNum(nEmptyCell)
+
+        for (x in 0 until 9) {
+            val subBoardRow = floor(x.toDouble() / 3)
+
+            val step = subBoardRow * 3
+
+            for (y in 0 until 9) {
+                val subBoardCol = floor(y.toDouble() / 3)
+                val subBoardIndex = (step + subBoardCol).toInt()
+
+                val currentBoardCellValue = finishedBoard[x][y]
+                if(emptyNumsSubBoard[subBoardIndex]!!.contains(currentBoardCellValue)){
+                    finishedBoard[x][y] = 0
+                }
+            }
+        }
+
+        return finishedBoard
     }
 
 

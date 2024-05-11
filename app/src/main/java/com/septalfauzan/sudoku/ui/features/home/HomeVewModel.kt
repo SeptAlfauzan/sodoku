@@ -80,7 +80,10 @@ class HomeVewModel @Inject constructor(private val useCase: SudokuGameUseCaseInt
 
                     if(!isValid){
                         _gameLife.value -= 1
-                        if(_gameLife.value == 0) _gameState.value = GameState.GAME_OVER
+                        if(_gameLife.value == 0) {
+                            _gameState.value = GameState.GAME_OVER
+                            timer.cancel()
+                        }
                     }
 
                     _boardState[selectedRow.value!!][selectedColumn.value!!] =
@@ -103,6 +106,10 @@ class HomeVewModel @Inject constructor(private val useCase: SudokuGameUseCaseInt
     private suspend fun List<List<Int>>.getBoardSolution() {
         try {
             val boardSolution = useCase.getBoardSolution(this)
+            Timber.tag("BOARD").d("$boardSolution")
+            Timber.tag("BOARD").d("unfinished $this")
+
+
             _boardState.clear()
             _boardState.addAll(this.toSudokuBoxCellStateList())
             _boardSolutionState = boardSolution
@@ -113,19 +120,20 @@ class HomeVewModel @Inject constructor(private val useCase: SudokuGameUseCaseInt
     }
 
     fun initGame() {
+
         _loadingBoard.value = true
         _gameState.value = GameState.ON_GAME
-        _gameLife.value = initialGameLife
-        _countDown.value = initialCountDownTimer
-
-        viewModelScope.launch(Dispatchers.Default) {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 getBoard().getBoardSolution()
                 Timber.tag("TAG").d("initGame: $_boardState")
             } catch (e: Exception) {
+                print(e)
                 throw e
             } finally {
                 delay(1500)
+                _gameLife.value = initialGameLife
+                _countDown.value = initialCountDownTimer
                 _loadingBoard.value = false
                 timer.start()
             }
